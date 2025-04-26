@@ -19,6 +19,9 @@ def get_month_cutoff_dates(first_day_of_month):
     
     return start_date.date(), end_date.date()
 
+def addresss_formatting(address):
+    return f"{address['line1']}, {address['postcode']}, {address['city']}, {address['country']}"
+
 def generate(tenant, user, hours_type, travel_type, first_day_of_month):
     """
     Generates the payroll of carers and non-carer users.
@@ -54,8 +57,8 @@ def generate(tenant, user, hours_type, travel_type, first_day_of_month):
                     durations += int(daily_visit.duration)
                     end_location = daily_visit.clock_in_location
                     if start_location:
-                        start_coordinates = find_coordinates(start_location)
-                        end_coordinates = find_coordinates(end_location)
+                        start_coordinates = find_coordinates(addresss_formatting(start_location))
+                        end_coordinates = find_coordinates(addresss_formatting(end_location))
                         travel_time.append(estimate_travel_time(start_coordinates, end_coordinates, daily_visit.clock_in))
                         milage.append(get_distance_in_miles(start_coordinates, end_coordinates))
                     start_location = end_location
@@ -71,7 +74,7 @@ def generate(tenant, user, hours_type, travel_type, first_day_of_month):
                 travel_wage = sum(milage) * int(user.travel_rate)
         else:
             # Non-carer logic
-            hours = user.working_hours
+            hours = user.working_hours*4
             travel_wage = 0
 
         hourly_wage = hours * int(user.working_hour_rate)

@@ -17,7 +17,7 @@ auth_router = APIRouter(tags=['authentication'])
 
 
 @auth_router.post("/login/", response_model=Token)
-def login(userdetails: LoginRequest, db: Session = Depends(get_db_auth)):
+def login(userdetails: LoginRequest):
     tenant_schema = userdetails.tenant
     if userdetails.tenant == SLUG:
         tenant_schema = PUBLIC_TENANT
@@ -37,6 +37,9 @@ def login(userdetails: LoginRequest, db: Session = Depends(get_db_auth)):
     
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Disabled User')
+    
+    if not user.dbs_status:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='DBS check Failed')    
     
     return create_access_token(data=user, tenant=tenant_schema)
 

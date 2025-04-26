@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Boolean, Enum, ForeignKey, TIMESTAMP, Integer
 from datetime import datetime
 from config.database import Base
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 class User(Base):
@@ -13,7 +14,7 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     contact = Column(String(20), nullable=True)
-    address = Column(String, nullable=True)
+    address = Column(JSONB, nullable=True)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
     
     employee_type = Column(String(20), nullable=True)  # Full-time, Part-time, etc.
@@ -26,7 +27,7 @@ class User(Base):
     
     role = relationship("Role", back_populates="users")
     trainings = relationship("Training", back_populates="user", cascade="all, delete") 
-    rota_staff = relationship("RotaStaff", back_populates="user", cascade="all, delete")
+    service_staff = relationship("ServiceStaff", back_populates="user", cascade="all, delete")
     visits = relationship("Visit", back_populates="user", cascade="all, delete")
     holiday_quotas = relationship("HolidayQuota", back_populates="user", cascade="all, delete")
     holidays = relationship("Holiday", back_populates="user", cascade="all, delete")

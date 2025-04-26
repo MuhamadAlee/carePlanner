@@ -9,7 +9,7 @@ from controllers.visitMedication import (
     get_refused_medication
 )
 from controllers.auth import get_current_user
-from utils.authorization import is_supervisor
+from utils.authorization import is_supervisor, is_carer_required
 from models.visitMedication import VisitMedication
 from models.user import User
 from typing import List
@@ -23,9 +23,9 @@ def create(
     visit_medication_data: VisitMedicationCreate, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user),
-    _ = Depends(is_supervisor)
+    _ = Depends(is_carer_required)
 ):
-    return create_visit_medication(db, visit_medication_data)
+    return create_visit_medication(db, current_user.user_id, current_user.role_id, visit_medication_data)
 
 @visit_medication_router.get("/get_single_visit_medication/{visit_medication_id}", response_model=VisitMedicationResponse)
 def read(
@@ -70,7 +70,7 @@ def update(
     update_data: VisitMedicationUpdate, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user),
-    _ = Depends(is_supervisor)
+    _ = Depends(is_carer_required)
 ):
     return update_visit_medication(db, visit_medication_id, update_data)
 
@@ -79,7 +79,7 @@ def delete(
     visit_medication_id: int, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user),
-    _ = Depends(is_supervisor)
+    _ = Depends(is_carer_required)
 ):
     return delete_visit_medication(db, visit_medication_id)
 

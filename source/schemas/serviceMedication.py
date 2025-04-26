@@ -1,29 +1,29 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class RotaMedicationBase(BaseModel):
-    rota_id: int
+class ServiceMedicationBase(BaseModel):
+    service_id: int
     name: str
     dosage: str
     instructions: Optional[str] = None
 
-class RotaMedicationCreate(BaseModel):
-    rota_id: int
+class ServiceMedicationCreate(BaseModel):
+    service_id: int
     name: str
     dosage: str
     instructions: Optional[str] = None
 
-class RotaMedicationUpdate(BaseModel):
-    rota_id: Optional[int] = None
+class ServiceMedicationUpdate(BaseModel):
+    service_id: Optional[int] = None
     name: Optional[str] = None
     dosage: Optional[str] = None
     instructions: Optional[str] = None
 
-class RotaMedicationResponse(RotaMedicationBase):
+class ServiceMedicationResponse(ServiceMedicationBase):
     medication_id: int
     
     class Config:
         from_attributes = True
 
-class RotaMedication(RotaMedicationResponse):
+class ServiceMedication(ServiceMedicationResponse):
     pass

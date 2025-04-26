@@ -16,18 +16,21 @@ from typing import List
 from fastapi import BackgroundTasks
 from scheduling.generate_payroll import generate
 from typing import List, Optional
-from datetime import date
+from datetime import date, datetime
+from config.parameters import WORK_HOURS, TIME_BASED
 
 # ---- Routes ----
 payroll_router = APIRouter(tags=["Payroll"])
 Base.metadata.create_all(bind=engine)
 
-@payroll_router.post("/generate_payrolls/{hours_type}/{travel_type}/{first_day_of_month}", response_model=dict, dependencies=[Depends(get_current_user)])
+from fastapi import Query
+
+@payroll_router.post("/generate_payrolls", response_model=dict, dependencies=[Depends(get_current_user)])
 def create_payrolls(
     background_tasks: BackgroundTasks,
-    hours_type:str,
-    travel_type:str,
-    first_day_of_month: date,
+    hours_type: str = Query(WORK_HOURS, description="Type of hours"),
+    travel_type: str = Query(TIME_BASED, description="Type of travel"),
+    first_day_of_month: date = Query(datetime.today().replace(day=1).date(), description="First day of the month"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):

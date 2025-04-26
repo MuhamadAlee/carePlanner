@@ -8,7 +8,7 @@ class Roster(Base):
     
     roster_id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     client_id = Column(Integer, ForeignKey("clients.client_id", ondelete="CASCADE"), nullable=False)
-    rota_id = Column(Integer, ForeignKey("rotas.rota_id", ondelete="CASCADE"), nullable=False)
+    service_id = Column(Integer, ForeignKey("services.service_id", ondelete="CASCADE"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
     
     day = Column(Text, nullable=False)
@@ -17,6 +17,6 @@ class Roster(Base):
     date = Column(Date, nullable=False)
     
     client = relationship("Client", back_populates="rosters")
-    rota = relationship("Rota", back_populates="rosters")
+    service = relationship("Service", back_populates="rosters")
     user = relationship("User", back_populates="rosters")
     visits = relationship("Visit", back_populates="roster", cascade="all, delete")

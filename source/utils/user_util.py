@@ -59,11 +59,12 @@ def get_carer_users(tenant):
    db.execute(text(f"SET search_path TO '{tenant}'"))
    try:
       users = get_all_carer_users(db)
+      active_users = [user for user in users if (user.dbs_status and user.is_active)]
    except:
-      users = []
+      active_users = []
    finally:
       db.close()
-      return users
+      return active_users
    
 
 def get_non_carer_users(tenant):

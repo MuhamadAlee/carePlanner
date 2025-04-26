@@ -2,7 +2,7 @@ from controllers.visit import get_visit, get_visit_by_user_id_and_date_range, ge
 from config.database import engine, Base, get_db, SessionLocal
 from sqlalchemy import text
 
-def verify_visit(tenant, visit_id):
+def verify_visit(tenant, user_id, role_id, visit_id):
    """
    verifies wether rota exists in the tenant or not
    """
@@ -10,7 +10,7 @@ def verify_visit(tenant, visit_id):
    try:
       db= SessionLocal()
       db.execute(text(f"SET search_path TO '{tenant}'"))
-      visit = get_visit(db, visit_id)
+      visit = get_visit(db, user_id, role_id, visit_id)
       if not visit:
          flag = False
    except:

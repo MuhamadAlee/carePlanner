@@ -4,8 +4,10 @@ from models.visit import Visit
 from schemas.visit import VisitCreate, VisitUpdate, VisitClockedOUtUpdate, VisitCreateClockIn
 from utils.client_util import verify_client
 from utils.user_util import verify_user
-from utils.roster_util import verify_roster
+from utils.roster_util import verify_roster, get_my_roster
 from utils.role_util import verify_role_assignment
+from utils.visit_med_util import verify_visit_medications
+from utils.visit_task_util import verify_visit_tasks
 from config.parameters import *
 from datetime import date
 from sqlalchemy import text
@@ -130,8 +132,8 @@ def create_visit_for_clockin(db: Session, role_id:int, visit_data: VisitCreateCl
             (not verify_roster(tenant, user_id, role_id, visit_data.roster_id))):
             raise HTTPException(status_code=400, detail="Either Client, User or Roster does not found")
         
-        visit = Visit(**visit_data.dict(), user_id=user_id, clock_out_location="")
-        visit.status = VISIT_REVIEW_PENDING
+        visit = Visit(**visit_data.dict(), user_id=user_id, clock_out_location=None, clock_out=None)
+        visit.status =VISIT_REVIEW_PENDING
         db.add(visit)
         db.flush()
         tenant = db.execute(text("SHOW search_path")).fetchall()[0][0]
@@ -217,6 +219,17 @@ def update_clockout_visit(db: Session,user_id:int, role_id:int, visit_id: int, u
     try:
         visit = get_visit(db,user_id, role_id, visit_id)
         visit.status = VISIT_REVIEW_PENDING
+        tenant = db.execute(text("SHOW search_path")).fetchall()[0][0]
+        roster = get_my_roster(tenant, user_id, role_id, visit.roster_id)
+        medication_check = verify_visit_medications(tenant, roster.service_id)
+        db.execute(text(f"SET search_path TO {tenant}"))
+        tasks_check = verify_visit_tasks(tenant, roster.service_id)
+        db.execute(text(f"SET search_path TO {tenant}"))
+        if not medication_check:
+            raise HTTPException(status_code=404, detail ="Service Medications not Given")
+        if not tasks_check:
+            raise HTTPException(status_code=404, detail ="Service Tasks not completed")
+        
         for key, value in update_data.dict(exclude_unset=True).items():
             setattr(visit, key, value)
         db.flush()

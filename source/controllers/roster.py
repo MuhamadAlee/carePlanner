@@ -214,6 +214,48 @@ def get_matching_rosters(db: Session, day: str, start_time: str, end_time: str, 
         Roster.date == date
     ).all()
 
+def get_matching_rosters_with_buffer_at_start(db: Session, day: str, start_time: str, date:date, user_id: int):
+    """
+    Fetches rosters that match the given day, start time, end time, and user ID.
+
+    Args:
+        db (Session): Database session.
+        day (str): The day of the Roster.
+        start_time (str): The start time of the Roster.
+        date (date): The date of the Roster.
+        user_id (int): The user ID associated with the Roster.
+
+    Returns:
+        List[Roster]: A list of matching Roster objects.
+    """
+    return db.query(Roster).filter(
+        Roster.day == day,
+        Roster.end_time == start_time,
+        Roster.user_id == user_id,
+        Roster.date == date
+    ).all()
+
+def get_matching_rosters_with_buffer_at_end(db: Session, day: str, end_time: str, date:date, user_id: int):
+    """
+    Fetches rosters that match the given day, start time, end time, and user ID.
+
+    Args:
+        db (Session): Database session.
+        day (str): The day of the Roster.
+        start_time (str): The start time of the Roster.
+        date (date): The date of the Roster.
+        user_id (int): The user ID associated with the Roster.
+
+    Returns:
+        List[Roster]: A list of matching Roster objects.
+    """
+    return db.query(Roster).filter(
+        Roster.day == day,
+        Roster.start_time == end_time,
+        Roster.user_id == user_id,
+        Roster.date == date
+    ).all()
+
 
 def get_matching_rosters_based_on_end_time(db: Session, day: str, end_time: str, date: date, user_id: int):
     """

@@ -28,7 +28,14 @@ SUPER_USER_EMAIL = os.getenv('SUPER_USER_EMAIL')
 SUPER_USER_PASSWORD = os.getenv('SUPER_USER_PASSWORD')
 
 SUPER_USER_CONTACT = os.getenv('SUPER_USER_CONTACT')
-SUPER_USER_ADDRESS = os.getenv('SUPER_USER_ADDRESS')
+SUPER_USER_ADDRESS = {
+                        "line1": os.getenv('SUPER_USER_ADDRESS_LINE1'),
+                        "line2": os.getenv('SUPER_USER_ADDRESS_LINE2'),
+                        "postcode": os.getenv('SUPER_USER_ADDRESS_POSTCODE'),
+                        "city": os.getenv('SUPER_USER_ADDRESS_CITY'),
+                        "county": os.getenv('SUPER_USER_ADDRESS_COUNTY'),
+                        "country": os.getenv('SUPER_USER_ADDRESS_COUNTRY')
+                    }
 SUPER_USER_EMPLOYEE_TYPE =os.getenv('SUPER_USER_EMPLOYEE_TYPE')
 SUPER_USER_HOURS = os.getenv('SUPER_USER_HOURS')
 
@@ -46,6 +53,27 @@ CARE_COORDINATOR = 'care_coordinator' # no finance, no user_creation
 SUPERVISOR = 'supervisor' # only scheduling thing, rota thing, inspection note (future use)
 MONITOR = 'monitor' # reports, statitcs.
 CARER = 'carer' # clock in , clock out
+
+
+TENANT_ROLES = [
+    {"role_name": ADMIN, "description": "All Preveliges inside system"},
+    {"role_name": OFFICE_USER, "description": "All preveliges excluding Finance"},
+    {"role_name": CARE_COORDINATOR, "description": "All preveliges excluding Finanance and User Mgmt"},
+    {"role_name": SUPERVISOR, "description": "only scheduling thing, rota thing, inspection note"},
+    {"role_name": MONITOR, "description": "reports, statitcs view"},
+    {"role_name": CARER, "description": "clock in , clock out and visits to clients"},
+]
+
+
+SUPER_TENANT_ROLES = [
+    {"role_name": SUPER_ADMIN, "description": "Manages Tenants"},
+    {"role_name": ADMIN, "description": "All Preveliges inside system"},
+    {"role_name": OFFICE_USER, "description": "All preveliges excluding Finance"},
+    {"role_name": CARE_COORDINATOR, "description": "All preveliges excluding Finanance and User Mgmt"},
+    {"role_name": SUPERVISOR, "description": "only scheduling thing, rota thing, inspection note"},
+    {"role_name": MONITOR, "description": "reports, statitcs view"},
+    {"role_name": CARER, "description": "clock in , clock out and visits to clients"},
+]
 
 ROLES = [ROLE_NAME, ADMIN, OFFICE_USER, CARE_COORDINATOR, SUPERVISOR, MONITOR, CARER]
 
@@ -77,5 +105,9 @@ VISIT_REVIEW_APPROVAL = 'Approved'
 
 # Medication
 MEDICATION_REFUSED =  'Refused'
+
+#Employee type
+
+EMPLOYEE_TYPE = ['Permanent', 'Contract', 'Zero-Hour Contract']
 
 

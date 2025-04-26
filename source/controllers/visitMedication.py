@@ -75,7 +75,7 @@ def get_visit_medication_by_visit_id(db: Session, visit_id: int):
         raise HTTPException(status_code=404, detail=str(e))
 
 
-def create_visit_medication(db: Session, visit_medication_data: VisitMedicationCreate):
+def create_visit_medication(db: Session, user_id, role_id, visit_medication_data: VisitMedicationCreate):
     """Create a new visit task in the database.
     
     Args:
@@ -89,7 +89,7 @@ def create_visit_medication(db: Session, visit_medication_data: VisitMedicationC
     try:
         tenant = db.execute(text("SHOW search_path")).fetchall()[0][0]
         if (not verify_medication(tenant, visit_medication_data.medication_id) or 
-            not verify_visit(tenant, visit_medication_data.visit_id)):
+            not verify_visit(tenant, user_id, role_id, visit_medication_data.visit_id)):
             raise HTTPException(status_code=400, detail="Either Task or Visit not found")
         
         visit_medication = VisitMedication(**visit_medication_data.dict())

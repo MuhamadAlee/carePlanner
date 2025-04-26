@@ -4,7 +4,7 @@ from typing import Optional
 
 # ---- Schemas ----
 
-class RotaBase(BaseModel):
+class ServiceBase(BaseModel):
     client_id: Optional[int]
     day_of_week: str
     start_time: time
@@ -14,7 +14,7 @@ class RotaBase(BaseModel):
     staff_required: int
     special_notes: Optional[str] = None
 
-class RotaCreate(BaseModel):
+class ServiceCreate(BaseModel):
     client_id: Optional[int]
     day_of_week: str
     start_time: time
@@ -24,7 +24,7 @@ class RotaCreate(BaseModel):
     staff_required: int
     special_notes: Optional[str] = None
 
-class RotaUpdate(BaseModel):
+class ServiceUpdate(BaseModel):
     client_id: Optional[int]
     day_of_week: Optional[str]
     start_time: Optional[time]
@@ -34,8 +34,8 @@ class RotaUpdate(BaseModel):
     staff_required: Optional[int]
     special_notes: Optional[str]
 
-class RotaResponse(RotaBase):
-    rota_id: int
+class ServiceResponse(ServiceBase):
+    service_id: int
     created_at: datetime
 
     class Config:

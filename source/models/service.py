@@ -3,10 +3,10 @@ from config.database import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-class Rota(Base):
-    __tablename__ = "rotas"
+class Service(Base):
+    __tablename__ = "services"
     
-    rota_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    service_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     client_id = Column(Integer,ForeignKey("clients.client_id", ondelete="SET NULL"), nullable=True)
     
     day_of_week = Column(Text, nullable=False)
@@ -18,8 +18,8 @@ class Rota(Base):
     special_notes = Column(Text, nullable=True)
     created_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
 
-    client = relationship("Client", back_populates="rotas")
-    rota_staff = relationship("RotaStaff", back_populates="rota", cascade="all, delete")
-    rota_task = relationship("RotaTask", back_populates="rota", cascade="all, delete")
-    rota_medication = relationship("RotaMedication", back_populates="rota", cascade="all, delete")
-    rosters = relationship("Roster", back_populates="rota", cascade="all, delete")
+    client = relationship("Client", back_populates="services")
+    service_staff = relationship("ServiceStaff", back_populates="service", cascade="all, delete")
+    service_task = relationship("ServiceTask", back_populates="service", cascade="all, delete")
+    service_medication = relationship("ServiceMedication", back_populates="service", cascade="all, delete")
+    rosters = relationship("Roster", back_populates="service", cascade="all, delete")

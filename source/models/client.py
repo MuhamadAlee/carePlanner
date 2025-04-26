@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 import uuid
 from config.database import Base
+from sqlalchemy.dialects.postgresql import JSONB
 
 class Client(Base):
     __tablename__ = "clients"
@@ -20,12 +21,12 @@ class Client(Base):
     care_plan = Column(String, nullable=True)  # Path to the uploaded file
     diagnosis = Column(Text, nullable=True)
     allergies = Column(Text, nullable=True)
-    location = Column(Text, nullable=True)
+    location = Column(JSONB, nullable=True)
     charge_rate = Column(Integer, nullable=True)
     is_active = Column(Boolean, default=True)
 
     contacts = relationship("Contact", back_populates="client", cascade="all, delete")
     rosters = relationship("Roster", back_populates="client", cascade="all, delete")
-    rotas = relationship("Rota", back_populates="client", cascade="all, delete")
+    services = relationship("Service", back_populates="client", cascade="all, delete")
     visits = relationship("Visit", back_populates="client", cascade="all, delete")
     invoices = relationship("Invoice", back_populates="client", cascade="all, delete")

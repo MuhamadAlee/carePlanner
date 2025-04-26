@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, ForeignKey, Text, DECIMAL, Date, TIMESTAMP, Integer, Time
 from config.database import Base
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
 
 class Visit(Base):
@@ -14,8 +15,8 @@ class Visit(Base):
     date = Column(Date, nullable=False)
     clock_in = Column(Time, nullable=True)
     clock_out = Column(Time, nullable=True)
-    clock_in_location = Column(Text, nullable=True)
-    clock_out_location = Column(Text, nullable=True)
+    clock_in_location = Column(JSONB, nullable=True)
+    clock_out_location = Column(JSONB, nullable=True)
     duration = Column(DECIMAL(5,2), nullable=True)
     notes = Column(Text, nullable=True)
     status = Column(String(50), nullable=False)

@@ -48,7 +48,7 @@ def get_visit_task_by_task_id(db: Session, task_id: int):
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 
-def create_visit_task(db: Session, visit_task_data: VisitTaskCreate):
+def create_visit_task(db: Session, user_id, role_id, visit_task_data: VisitTaskCreate):
     """Create a new visit task in the database.
     
     Args:
@@ -62,7 +62,7 @@ def create_visit_task(db: Session, visit_task_data: VisitTaskCreate):
     try:
         tenant = db.execute(text("SHOW search_path")).fetchall()[0][0]
         if (not verify_task(tenant, visit_task_data.task_id) or 
-            not verify_visit(tenant, visit_task_data.visit_id)):
+            not verify_visit(tenant, user_id, role_id, visit_task_data.visit_id)):
             raise HTTPException(status_code=400, detail="Either Task or Visit not found")
         
         visit_task = VisitTask(**visit_task_data.dict())

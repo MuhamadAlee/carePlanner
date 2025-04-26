@@ -4,6 +4,7 @@ from uuid import uuid4
 from config.parameters import *
 from models.tenant import Tenant
 from schemas.tenant import TenantCreate, TenantUpdate
+from controllers.role import first_time_bulk_role_creation
 from sqlalchemy import text
 from config.database import create_tenant_schema_and_tables
 
@@ -87,6 +88,10 @@ def create_tenant(db: Session, tenant_data: TenantCreate):
         db.refresh(tenant)
         if tenant.slug != SLUG:
             create_tenant_schema_and_tables(tenant.slug)
+            db.execute(text(f"SET search_path TO {tenant.slug}"))
+            first_time_bulk_role_creation(db)
+            db.execute(text(f"SET search_path TO {tenant_info}"))
+
         return tenant
     except Exception as e:
         db.rollback()

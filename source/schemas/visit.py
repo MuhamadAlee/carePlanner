@@ -1,8 +1,18 @@
 from datetime import datetime, date, time
 from pydantic import BaseModel
 from typing import Optional
+from config.parameters import VISIT_REVIEW_PENDING
 
 # ---- Schemas ----
+
+# ---- Address Model ----
+class Address(BaseModel):
+    line1: str                      # Most important
+    line2: Optional[str] = None         # Optional
+    postcode: str                       # Most important
+    city: str
+    county: Optional[str] = None        # Optional
+    country: str = "UK"  
 
 class VisitBase(BaseModel):
     roster_id: int
@@ -11,8 +21,8 @@ class VisitBase(BaseModel):
     date: date
     clock_in: Optional[time] = None
     clock_out: Optional[time] = None
-    clock_in_location: Optional[str] = None
-    clock_out_location: Optional[str] = None
+    clock_in_location: Optional[Address] = None 
+    clock_out_location: Optional[Address] = None 
     duration: Optional[float] = None
     notes: Optional[str] = None
     status: str
@@ -24,8 +34,8 @@ class VisitCreate(BaseModel):
     date: date
     clock_in: Optional[time] = None
     clock_out: Optional[time] = None
-    clock_in_location: Optional[str] = None
-    clock_out_location: Optional[str] = None
+    clock_in_location: Optional[Address] = None 
+    clock_out_location: Optional[Address] = None 
     duration: Optional[float] = None
     notes: Optional[str] = None
     status: str
@@ -35,11 +45,10 @@ class VisitCreateClockIn(BaseModel):
     client_id: int
     date: date
     clock_in: Optional[time] = None
-    clock_out: Optional[time] = None
     duration: Optional[float] = None
-    clock_in_location: Optional[str] = None
+    clock_in_location: Optional[Address] = None 
     notes: Optional[str] = None
-    status: str
+    status: Optional[str] = VISIT_REVIEW_PENDING
 
 class VisitUpdate(BaseModel):
     roster_id: Optional[int]
@@ -54,10 +63,9 @@ class VisitUpdate(BaseModel):
 
 class VisitClockedOUtUpdate(BaseModel):
     clock_out: Optional[time]
-    clock_out_location: Optional[str]
+    clock_out_location: Optional[Address] = None 
     duration: Optional[float]
-    notes: Optional[str]
-    status: Optional[str]
+    status: Optional[str] = VISIT_REVIEW_PENDING
 
 class VisitResponse(VisitBase):
     visit_id: int

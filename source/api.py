@@ -15,10 +15,10 @@ from routes.training import training_router
 from routes.client import client_router
 from routes.contact import contact_router
 from routes.roster import roster_router
-from routes.rota import rota_router
-from routes.rotaStaff import rota_staff_router
-from routes.rotaTask import rota_task_router
-from routes.rotaMedication import rota_medication_router
+from routes.service import service_router
+from routes.serviceStaff import service_staff_router
+from routes.serviceTask import service_task_router
+from routes.serviceMedication import service_medication_router
 from routes.visit import visit_router
 from routes.visitTask import visit_task_router
 from routes.visitMedication import visit_medication_router
@@ -86,10 +86,10 @@ app.include_router(auth_router)
 app.include_router(training_router)
 app.include_router(client_router)
 app.include_router(contact_router)
-app.include_router(rota_router)
-app.include_router(rota_staff_router)
-app.include_router(rota_task_router)
-app.include_router(rota_medication_router)
+app.include_router(service_router)
+app.include_router(service_staff_router)
+app.include_router(service_task_router)
+app.include_router(service_medication_router)
 app.include_router(roster_router)
 app.include_router(visit_router)
 app.include_router(visit_task_router)

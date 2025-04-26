@@ -7,7 +7,7 @@ from typing import Optional
 class RosterBase(BaseModel):
     roster_id: int
     client_id: int
-    rota_id: int
+    service_id: int
     user_id: int
     day: str
     start_time: time
@@ -17,7 +17,7 @@ class RosterBase(BaseModel):
 
 class RosterCreate(BaseModel):
     client_id: int
-    rota_id: int
+    service_id: int
     user_id: int
     day: str
     start_time: time
@@ -26,7 +26,7 @@ class RosterCreate(BaseModel):
 
 class RosterUpdate(BaseModel):
     client_id: Optional[int]
-    rota_id: Optional[int]
+    service_id: Optional[int]
     user_id: Optional[int]
     day: Optional[str]
     start_time: Optional[time]

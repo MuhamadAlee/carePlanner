@@ -8,7 +8,7 @@ from controllers.visitAccident import (
     get_visit_accident_by_visit_id
 )
 from controllers.auth import get_current_user
-from utils.authorization import is_supervisor
+from utils.authorization import is_supervisor, is_carer_required
 from models.visitAccident import VisitAccident
 from models.user import User
 from typing import List
@@ -22,7 +22,7 @@ def create(
     visit_accident_data: VisitAccidentCreate, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user),
-    _ = Depends(is_supervisor)
+    _ = Depends(is_carer_required)
 ):
     return create_visit_accident(db, visit_accident_data)
 
@@ -60,7 +60,7 @@ def update(
     update_data: VisitAccidentUpdate, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user),
-    _ = Depends(is_supervisor)
+    _ = Depends(is_carer_required)
 ):
     return update_visit_accident(db, visit_accident_id, update_data)
 
@@ -69,6 +69,6 @@ def delete(
     visit_accident_id: int, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user),
-    _ = Depends(is_supervisor)
+    _ = Depends(is_carer_required)
 ):
     return delete_visit_accident(db, visit_accident_id)

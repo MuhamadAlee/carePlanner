@@ -95,31 +95,44 @@ def create_role(db: Session, role_data: RoleCreate):
         db.rollback()
         raise HTTPException(status_code=404, detail=str(e))
     
-def first_time_role_creation(db: Session, role_data: RoleCreate):
-    """Create a new role in the database.
-    
+def first_time_bulk_role_creation(db: Session, tenant_type='Normal'):
+    """Create predefined roles in the database if they don't already exist.
+
     Args:
         db (Session): Database session.
-        role_data (RoleCreate): Role creation data.
-        
-    
+
     Returns:
-        Role: The newly created role object.
+        List[Role]: List of created role objects.
     """
     try:
-        if role_data.dict()['role_name'] not in ROLES:
-            raise HTTPException(status_code=404, detail="Role name does not allowed in system")
-        role = Role(**role_data.dict())
-        db.add(role)
-        db.flush()
-        tenant = db.execute(text("SHOW search_path")).fetchall()[0][0]
-        db.commit()
-        db.execute(text(f"SET search_path TO {tenant}"))
-        db.refresh(role)
-        return role
+        roles_to_create = []
+
+        if tenant_type =='Normal':
+            all_roles = TENANT_ROLES
+        else:
+            all_roles = SUPER_TENANT_ROLES
+        for role in all_roles:
+            # Check if role already exists to avoid duplicates
+            existing_role = db.query(Role).filter_by(role_name=role["role_name"]).first()
+            if not existing_role:
+                roles_to_create.append(Role(**role))
+        
+        if roles_to_create:
+            db.add_all(roles_to_create)
+            db.flush()
+            tenant = db.execute(text("SHOW search_path")).fetchall()[0][0]
+            db.commit()
+            db.execute(text(f"SET search_path TO {tenant}"))
+
+            for role in roles_to_create:
+                db.refresh(role)
+
+        return roles_to_create
+
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 def update_role(db: Session, role_id: int, update_data: RoleUpdate):
     """Update an existing role's details.

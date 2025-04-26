@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import Query, APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from schemas.invoice import InvoiceCreate, InvoiceUpdate, InvoiceResponse
@@ -15,22 +15,23 @@ from models.user import User
 from typing import List
 from fastapi import BackgroundTasks
 from scheduling.generate_invoice import generate
-from datetime import date
+from datetime import date, datetime
+from config.parameters import WORK_HOURS
 
 # ---- Routes ----
 invoice_router = APIRouter(tags=["Invoices"])
 Base.metadata.create_all(bind=engine)
 
-@invoice_router.post("/generate_invoices/{hours_type}/{first_day_of_month}", response_model=dict, dependencies=[Depends(get_current_user)])
+@invoice_router.post("/generate_invoices", response_model=dict, dependencies=[Depends(get_current_user)])
 def create_invoices(
     background_tasks: BackgroundTasks,
-    hours_type:str,
-    first_day_of_month: date,
+    hours_type: str = Query(WORK_HOURS, description="Type of hours for invoice generation"),
+    first_day_of_month: date = Query(datetime.today().replace(day=1).date(), description="First day of the month"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     tenant = db.execute(text("SHOW search_path")).fetchall()[0][0]
-    background_tasks.add_task(generate,tenant, current_user, hours_type, first_day_of_month )
+    background_tasks.add_task(generate, tenant, current_user, hours_type, first_day_of_month)
     return {"message": "Invoice creation started in the background"}
 
 @invoice_router.post("/create_invoice/", response_model=InvoiceResponse, dependencies=[Depends(get_current_user)])

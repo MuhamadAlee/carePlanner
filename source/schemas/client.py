@@ -3,6 +3,15 @@ from pydantic import BaseModel
 from typing import Optional
 
 
+
+class Address(BaseModel):
+    line1: str                           # Most important
+    line2: Optional[str] = None         # Optional
+    postcode: str                       # Most important
+    city: str
+    county: Optional[str] = None        # Optional
+    country: str = "UK" 
+
 # ---- Schemas ----
 class ClientBase(BaseModel):
     name: str
@@ -16,7 +25,7 @@ class ClientBase(BaseModel):
     care_plan: Optional[str] = None  # File path or URL to the document
     diagnosis: Optional[str] = None
     allergies: Optional[str] = None
-    location: Optional[str] = None
+    location: Optional[Address] = None
     charge_rate: Optional[int] = None
     is_active: bool = True
 
@@ -32,7 +41,7 @@ class ClientCreate(BaseModel):
     care_plan: Optional[str] = None  # File path or URL to the document
     diagnosis: Optional[str] = None
     allergies: Optional[str] = None
-    location: Optional[str] = None
+    location: Optional[Address] = None
     charge_rate: Optional[int] = None
     is_active: bool = True
 
@@ -48,7 +57,7 @@ class ClientUpdate(BaseModel):
     care_plan: Optional[str]  # File path update
     diagnosis: Optional[str]
     allergies: Optional[str]
-    location: Optional[str]
+    location: Optional[Address] = None
     charge_rate: Optional[int]
     is_active: Optional[bool]
 

@@ -8,7 +8,7 @@ from controllers.visitTask import (
     get_visit_task_by_task_id, get_visit_task_by_visit_id
 )
 from controllers.auth import get_current_user
-from utils.authorization import is_supervisor
+from utils.authorization import is_supervisor,is_carer_required
 from models.visitTask import VisitTask
 from models.user import User
 from typing import List
@@ -22,9 +22,9 @@ def create(
     visit_task_data: VisitTaskCreate, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user),
-    _ = Depends(is_supervisor)
+    _ = Depends(is_carer_required)
 ):
-    return create_visit_task(db, visit_task_data)
+    return create_visit_task(db, current_user.user_id, current_user.role_id, visit_task_data)
 
 @visit_task_router.get("/get_single_visit_task/{visit_task_id}", response_model=VisitTaskResponse)
 def read(
@@ -69,7 +69,7 @@ def update(
     update_data: VisitTaskUpdate, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user),
-    _ = Depends(is_supervisor)
+    _ = Depends(is_carer_required)
 ):
     return update_visit_task(db, visit_task_id, update_data)
 
@@ -78,6 +78,6 @@ def delete(
     visit_task_id: int, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user),
-    _ = Depends(is_supervisor)
+    _ = Depends(is_carer_required)
 ):
     return delete_visit_task(db, visit_task_id)
